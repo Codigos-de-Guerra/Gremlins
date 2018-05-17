@@ -1,4 +1,4 @@
-# BARES. A project for Linguagem de Programação I (LP I)
+# GREMLINS. A project for Estrutura de Dados Básica I (EDB I)
 
 ## Introduction
 
@@ -50,4 +50,3 @@ $ ./gremlins
 Program developed by [_Daniel Oliveira Guerra_](https://github.com/Codigos-de-Guerra) (*daniel.guerra13@hotmail.com*) and [_Oziel Alves_](https://github.com/ozielalves) (*ozielalves@ufrn.edu.br*), 2018.1
 
 &copy; IMD/UFRN 2018.
-
