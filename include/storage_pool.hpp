@@ -5,7 +5,7 @@
  * @date Jun, 22.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
- * @title Class sc::StoragePool
+ * @title Class gm::StoragePool
  */
 
 /* "Para a implementação deste projeto é obrigatório a 
@@ -21,7 +21,7 @@
  * @brief StoragePool class's declaration
  */
 
-namespace sc
+namespace gm
 {
 	typedef T size_type;
 	

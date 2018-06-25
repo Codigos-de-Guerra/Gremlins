@@ -2,10 +2,10 @@
  * @file SLPool.hpp
  * @version 1.0
  * @since Jun, 13. 
- * @date Jun, 22.
+ * @date Jun, 25.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
- * @title Class sc::SLPool 
+ * @title gm::SLPool Class 
  */
 
 /* "Para a implementação deste projeto é obrigatório a 
@@ -20,7 +20,7 @@
  * @brief The SLPool Class prototype
  */
 
-namespace sc
+namespace gm
 {
 	typedef unsigned int uint;
 	typedef T size_type;
@@ -69,10 +69,10 @@ namespace sc
     	 */
     	struct Header {
         	
-        	uint m_Length;  //!< The block's size
+        	uint m_length;  //!< The block's size
         	
         	//! Header Constructor
-        	Header( ) : m_Length(0u) { /*Empty*/ }
+        	Header( ) : m_length(0u) { /*Empty*/ }
     	};
 
     	/**
@@ -100,7 +100,7 @@ namespace sc
     	};
 
 	 private:
-    	uint mui_NumberOfBlocks;	//!< The number of blocks
+    	uint m_n_blocks;			//!< The number of blocks
     	Block *m_pool;				//!< Head of list.
     	Block &m_sentinel;			//!< End of the list.
 };
