@@ -41,14 +41,19 @@ namespace gm
 	     * @param _b Number of bytes to be allocated
 	     * @return A pointer to the beggining of the allocated area
     	 */
-	    virtual void *Allocate( size_type _b ) /*= 0*/;
+	    virtual void *Allocate( size_type _b ) = 0;
 
 	    /**
 	     * @brief Free memory
 	     * @param _p A pointer to element to be freed
 	     */
-	    virtual void Free(void *_p) /*= 0*/;
-	}
+	    virtual void Free(void *_p) = 0;
+	
+		/**
+    	 * @brief Function to show a visual representation from memory Blocks
+    	 */
+    	virtual void view() = 0;
+	};
 
 }
 
