@@ -1,30 +1,31 @@
 /**
  * @file SLPool.cpp
  * @version 1.0
- * @since pineun, 13. 
- * @date pineun, 25.
+ * @since Jun, 13. 
+ * @date Jun, 25.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
  * @title gm::SLPool Class 
  */
 
 #include <iostream>
-#include <string>   // To std::string
+
 #include <cmath>    // To std::ceil
-//#include <cstdio>  // To std::size_t
+#include <cstdio>   // To std::size_t
+#include <string>   // To std::string
 #include <new>      // To std::bad_alloc
 #include "SLPool.hpp"
 
 using namespace gm;
 
 typedef unsigned int uint;
-typedef T size_type;
+typedef std::size_t size_type;
+typedef std::string string;
 
 /**
  * @brief gm::SLPool class implementation.
  */
 
-template< typename T >
 SLPool::SLPool(size_type _b) :
     m_n_blocks( std::ceil( static_cast<float>( _b)/Block::BlockSize ) + 1 ),
     m_pool( new Block[m_n_blocks] ),
@@ -38,12 +39,10 @@ SLPool::SLPool(size_type _b) :
     	m_sentinel.m_next = m_pool;
 }
 
-template< typename T >
 SLPool::~SLPool() {
     delete[] m_pool;
 }
 
-template< typename T >
 void *SLPool::Allocate(size_type _b) {
     
     unsigned n_blocks = std::ceil(static_cast<float>(_b)/Block::BlockSize);
@@ -71,7 +70,6 @@ void *SLPool::Allocate(size_type _b) {
     throw(std::bad_alloc());
 }
 
-template< typename T >
 void *SLPool::AllocateBF(size_type _b) {
     
     unsigned n_blocks = std::ceil(static_cast< float >(_b)/Block::BlockSize);
@@ -112,7 +110,6 @@ void *SLPool::AllocateBF(size_type _b) {
     throw(std::bad_alloc());
 }
 
-template< typename T >
 void SLPool::Free(void *_p) {
     
     auto *BEGIN = reinterpret_cast<Block *>(reinterpret_cast<Header *>(_p)-1U);
@@ -151,20 +148,19 @@ void SLPool::Free(void *_p) {
     }
 }
 
-template< typename T >
 void SLPool::view( ) {
 	
 	auto *pt = m_sentinel.m_next;
 	auto pos = 0u;
 	
 	while (pos < m_n_blocks - 1) {
-		auto pine = (m_pool + pos)->m_length;
-		pos += pine;
-		if (m_pool + pos - pine == pt) {
-			while (pine-- > 0) std::cout << "[] ";
+		auto aut = (m_pool + pos)->m_length;
+		pos += aut;
+		if (m_pool + pos - aut == pt) {
+			while (aut-- > 0) std::cout << "[] ";
 			pt = pt->m_next;
 		} else {
-			std::cout << "[ " << std::string(pine, '#') << " ] ";
+			std::cout << "[ " << string(aut, '#') << " ] ";
 		}
 	}
 	std::cout << "\n";

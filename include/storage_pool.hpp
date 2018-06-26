@@ -15,7 +15,7 @@
 # define _STORAGE_POOL_HPP_
 
 #include <iostream>
-//#include <vector>
+#include <cstdio> // std::size_t
 
 /**
  * @brief StoragePool class's declaration
@@ -23,9 +23,8 @@
 
 namespace gm
 {
-	typedef T size_type;
+	typedef std::size_t size_type;
 	
-	template< typename T >
 	class StoragePool{
 		
 	//private:
@@ -52,7 +51,7 @@ namespace gm
 		/**
     	 * @brief Function to show a visual representation from memory Blocks
     	 */
-    	virtual void view() = 0;
+    	virtual void view( ) = 0;
 	};
 
 }

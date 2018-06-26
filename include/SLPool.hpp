@@ -23,7 +23,7 @@
 namespace gm
 {
 	typedef unsigned int uint;
-	typedef T size_type;
+	typedef std::size_t size_type;
 
 	template< typename T >
 	class SLPool : public StoragePool {
