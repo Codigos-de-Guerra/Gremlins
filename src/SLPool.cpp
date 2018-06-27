@@ -55,7 +55,8 @@ void *SLPool::Allocate(size_type _b) {
 			// The pine Block have the same size that the client needs
 			if ( pos->m_length == n_blocks ) {
             	prev_pos->m_next = pos->m_next;
-            } else {
+            }
+			else {
             	prev_pos->m_next = pos + n_blocks;
             	prev_pos->m_next->m_next = pos->m_next;
             	prev_pos->m_next->m_length = pos->m_length - n_blocks;
@@ -99,6 +100,7 @@ void *SLPool::AllocateBF(size_type _b) {
     if (best != nullptr) {
         
         // A MEU DEUS QUE CONFUSAO EU NEM SEI MASI
+		// NANNIIIII!?!?
         prev_best->m_next = best + n_blocks;
         prev_best->m_next->m_next = best->m_next;
         prev_best->m_next->m_length = best->m_length - n_blocks;
@@ -159,7 +161,8 @@ void SLPool::view( ) {
 		if (m_pool + pos - aut == pt) {
 			while (aut-- > 0) std::cout << "[] ";
 			pt = pt->m_next;
-		} else {
+		}
+		else {
 			std::cout << "[ " << string(aut, '#') << " ] ";
 		}
 	}

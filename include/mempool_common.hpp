@@ -19,8 +19,8 @@
     owner of the lended memory
  */ 
 
-namespace gm
-{
+//namespace gm
+//{
     typedef std::size_t size_type;
 
     struct Tag {
@@ -80,6 +80,6 @@ namespace gm
         else
             std::free(tag);  // Memory block belongs to the operational system.
     }
-}
+//}
 
 #endif

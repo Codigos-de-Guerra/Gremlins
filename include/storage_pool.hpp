@@ -21,8 +21,8 @@
  * @brief StoragePool class's declaration
  */
 
-namespace gm
-{
+//namespace gm
+//{
 	typedef std::size_t size_type;
 	
 	class StoragePool{
@@ -54,6 +54,6 @@ namespace gm
     	virtual void view( ) = 0;
 	};
 
-}
+//}
 
 #endif
