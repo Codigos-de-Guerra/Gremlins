@@ -146,7 +146,13 @@ void SLPool::Free(void *_p) {
     if (pos == nullptr) {
 
         BEGIN->m_next = nullptr;
-        p_pos->m_next = BEGIN;
+		if( p_pos + p_pos->m_length == BEGIN ){
+			p_pos->m_length += BEGIN->m_length;
+
+			BEGIN->m_length = 0;
+		} else {
+        	p_pos->m_next = BEGIN;
+		}
     }
 }
 

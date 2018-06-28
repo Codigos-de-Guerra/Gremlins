@@ -246,7 +246,7 @@ int main(/* int argc, char **argv */)
 /*}}}*/
 
 /*------------------------------ Time Counting------------------------------*/ 
-
+/*Time Testing{{{*/
 {
     // Creates the pool
     StoragePool *pool = new SLPool(2048);
@@ -313,30 +313,78 @@ int main(/* int argc, char **argv */)
     }
     std::cout << ">>> Operational System time: " << time_spent << " ns\n";
 }
+/*}}}*/
 
-//	gm::SLPool p(220), q(110);
+	std::cout << "\n\n";
 
-	/* Also remembers that adds sizeof(Tag) when allocating.
-		Therefore, a call to allocate 44 bytes becomes, inside code,
-		a call to allocate 52 bytes. Requiring 4 blocks since 4*16 = 64.
-	*/
-/*	int *ptr0 = new int[2];			// Allocates 2*4=8 bytes.
-	int *ptr1 = new (p) int[6];		// Allocates 6*4=24 bytes.
-	int *ptr2 = new (q) int[11];	// Allocates 10*4=40 bytes.
+/*Testing if values are passed correctly{{{*/
+{
+	gm::SLPool p(220);
 
-	p.view();
-	q.view();
+	int *ptr = new (p) int[8];
 
-	delete ptr0;
-	delete ptr1;
-	delete ptr2;
+	std::cout << "Array with pool:\n[ ";
+	for( int i=0; i < 8; i++ ){
+		ptr[i] = (i+1)*5;
+		std::cout << ptr[i] << " ";
+	}
+	std::cout << "]\n";
 
+	int *ptr1 = new int[8];
+
+	std::cout << "Array with SO:\n[ ";
+	for( int i=0; i < 8; i++ ){
+		ptr1[i] = (i+1)*5;
+		std::cout << ptr1[i] << " ";
+	}
+	std::cout << "]\n";
+
+	p.view( );
+
+	for( int i=0; i < 8; i++ ) {
+		assert( ptr[i] == ptr1[i] );
+	}
 	std::cout << "\n";
 
-	p.view();
-	q.view();
+	delete[] ptr;
+	delete[] ptr1;
 
+}
+/*}}}*/
+
+/*
+	Caso 1: Liberar uma área entre áreas livres.
+	Caso 2: Liberar uma área antecedendo uma área ocupada, e sucedendo uma área livre.
+	Caso 3: Liberar uma área antecedendo uma área livre, e sucecendo uma área ocupada.
+	Caso 4: Liberar uma área entre áreas ocupadas.
+	Caso 5: Liberar uma área antecedendo o sentinela, e sucedendo uma área livre.
+	Caso 6: Liberar uma área antecedendo o sentinela, e sucedendo uma área ocupada.
 */
+
+/*Caso 1{{{*/
+{
+}
+/*}}}*/
+/*Caso 2{{{*/
+{
+}
+/*}}}*/
+/*Caso 3{{{*/
+{
+}
+/*}}}*/
+/*Caso 4{{{*/
+{
+}
+/*}}}*/
+/*Caso 5{{{*/
+{
+}
+/*}}}*/
+/*Caso 6{{{*/
+{
+}
+/*}}}*/
 
     std::cout << "\n>>> Exiting successfully...\n";
 
