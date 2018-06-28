@@ -32,59 +32,64 @@ using namespace gm;
  * @brief Event Class
  */
 
-class Event {
- public:
-    /**
-     * @brief Event default constructor
-     */
-    Event( ) { /*Empty*/ }
-
-    /**
-     * @brief Event Attibution constructor
-     * @param _p A pointer
-     * @param _t A time-stamp
-     */
-    Event(void *_p, tempo _t) {
-        m_ptr = _p;
-        m_time = _t;
-    }
-
-    /**
-     * @brief Gets the Event time-stamp
-     * @return The time-stamp
-     */
-    tempo getTimeStamp( ) {
-        return m_time;
-    }
-
-    /**
-     * @brief Gets the pointer
-     * @return The pointer
-     */
-    void *getMemoryPtr( ) {
-        return m_ptr;
-    }
-
-    /**
-     * @brief Overloads the < operator
-     * @param _e The another event to be comparised
-     * @return True or False, comparing by the time-stamp
-     */
-    bool operator<(const Event &_e) const {
-        return m_time < _e.m_time;
-    }
-
- private:
-    void *m_ptr;	//!< The Event pointer
-    tempo m_time;	//!< The Event time-stamp
+class Event
+/*{{{*/
+{
+	public:
+        /**
+         * @brief Event default constructor
+         */
+        Event( ) { /*Empty*/ }
+    
+        /**
+         * @brief Event Attibution constructor
+         * @param _p A pointer
+         * @param _t A time-stamp
+         */
+        Event(void *_p, tempo _t) {
+            m_ptr = _p;
+            m_time = _t;
+        }
+    
+        /**
+         * @brief Gets the Event time-stamp
+         * @return The time-stamp
+         */
+        tempo getTimeStamp( ) {
+            return m_time;
+        }
+    
+        /**
+         * @brief Gets the pointer
+         * @return The pointer
+         */
+        void *getMemoryPtr( ) {
+            return m_ptr;
+        }
+    
+        /**
+         * @brief Overloads the < operator
+         * @param _e The another event to be comparised
+         * @return True or False, comparing by the time-stamp
+         */
+        bool operator<(const Event &_e) const {
+            return m_time < _e.m_time;
+        }
+    
+	private:
+        void *m_ptr;	//!< The Event pointer
+        tempo m_time;	//!< The Event time-stamp
 };
+/*}}}*/
 
 /**
  * @brief Allocation test in a limited time
  * @param _pool A pointer to the pool to be used
  * @param _timeLimit The time limit
  */
-void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
+void StoragePoolTest(StoragePool *_pool, tempo _timeLimit)
+/*{{{*/
+{
     // [1] Setup random numbers generator for memory size, say [100,2000] bytes.
     std::random_device rdm;
     auto ms_max = 2000u, ms_min = 100u;
@@ -96,7 +101,7 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
     //     insert some events comprising the simulation.
     std::priority_queue< Event > pq;
     
-    // Assuming there is a class Event that creates a pair address / time stamp.
+    // Assuming there is a class Event that creates a pair address/time stamp.
 
     // Run simulation fot the time set by the client.
     for ( tempo t(0); t < _timeLimit; t++ ) {
@@ -104,7 +109,7 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
         // Run while we have events pending or time to run.
         while ( !pq.empty( ) ){
             
-            // Access the event with the smallest time - stamp.
+            // Access the event with the smallest time-stamp.
             Event ev = pq.top( );
             
             // Do nothing. Still some time left.
@@ -115,12 +120,12 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
             pq.pop( );
             
             // Calling free operator.
-            _pool->Free(ev.getMemoryPtr( ));
+            _pool->Free( ev.getMemoryPtr( ) );
         }
         
-        auto memorySize = rdm( )%( ms_max - ms_min ) + ms_min;
+        auto memorySize = rdm( )%( ms_max - ms_min + 1 ) + ms_min;
         void *const add = _pool->Allocate(memorySize);
-        auto timeSpent = rdm( )%( ti_max - ti_min ) + ti_min;
+        auto timeSpent = rdm( )%( ti_max - ti_min + 1 ) + ti_min;
         
         // Set time stamp some time from now.
         tempo releaseTime = t + timeSpent;
@@ -133,8 +138,11 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
     }
 }
 
+/*}}}*/
+
 int main(/* int argc, char **argv */)
 {
+/*{{{*/
 	/*{
 		StoragePool *pool = new gm::SLPool(300);
 
@@ -235,12 +243,13 @@ int main(/* int argc, char **argv */)
 
     	delete pool;
 	}*/
+/*}}}*/
 
 /*------------------------------ Time Counting------------------------------*/ 
 
 {
     // Creates the pool
-    StoragePool *pool = new SLPool(2000);
+    StoragePool *pool = new SLPool(2048);
 
     // The initial time
     auto s = std::chrono::steady_clock::now( );
@@ -264,7 +273,7 @@ int main(/* int argc, char **argv */)
 	std::chrono::steady_clock::time_point start, end;
     auto time_spent = 0.0l;
     int times = 100000, *al1 = nullptr, *al2 = nullptr;
-    SLPool pool(100);
+    SLPool pool(400);
 
     // Average Time with the Memory Manager
     for ( int i = 0; i < times; i++ ) {
@@ -275,6 +284,7 @@ int main(/* int argc, char **argv */)
             delete[] al1;
             delete[] al2;
         }
+
         // The final time
         end = std::chrono::steady_clock::now();
         // Calculates the difference

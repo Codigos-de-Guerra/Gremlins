@@ -78,6 +78,7 @@ project: $(BIN_PATH)/$(BIN_NAME)
 
 # Creation of the executable
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
+	@echo " "
 	@echo "Linking: $@"
 	$(CXX) $(OBJECTS) -o $@
 
