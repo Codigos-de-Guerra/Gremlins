@@ -143,6 +143,13 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit)
 int main(/* int argc, char **argv */)
 {
 /*{{{*/
+	std::cout << "\n\e[31;1m>>>Subtitles:\e[0m\n"
+			  << "\t\e[30;1m+: Avaiable area. Free area.\n"
+			  << "\t-: Occupied area. Already in use.\n"
+			  << "\t*: Representation of free blocks. Avaiable for use.\n"
+			  << "\t#: Representation of occupied blocks.\e[0m\n\n\n";
+	//TODO...
+
 	/*{
 		StoragePool *pool = new gm::SLPool(300);
 
@@ -315,7 +322,7 @@ int main(/* int argc, char **argv */)
 }
 /*}}}*/
 
-	std::cout << "\n\n";
+	std::cout << "\n>>> Testing data maintenance.";
 
 /*Testing if values are passed correctly{{{*/
 {
@@ -323,23 +330,15 @@ int main(/* int argc, char **argv */)
 
 	int *ptr = new (p) int[8];
 
-	std::cout << "Array with pool:\n[ ";
 	for( int i=0; i < 8; i++ ){
 		ptr[i] = (i+1)*5;
-		std::cout << ptr[i] << " ";
 	}
-	std::cout << "]\n";
 
 	int *ptr1 = new int[8];
 
-	std::cout << "Array with SO:\n[ ";
 	for( int i=0; i < 8; i++ ){
 		ptr1[i] = (i+1)*5;
-		std::cout << ptr1[i] << " ";
 	}
-	std::cout << "]\n";
-
-	p.view( );
 
 	for( int i=0; i < 8; i++ ) {
 		assert( ptr[i] == ptr1[i] );
@@ -349,32 +348,90 @@ int main(/* int argc, char **argv */)
 	delete[] ptr;
 	delete[] ptr1;
 
+	std::cout << "Data not corrupted. Maintenance successful.\n\n";
 }
 /*}}}*/
 
-/*
-	Caso 1: Liberar uma área entre áreas livres.
-	Caso 2: Liberar uma área antecedendo uma área ocupada, e sucedendo uma área livre.
-	Caso 3: Liberar uma área antecedendo uma área livre, e sucecendo uma área ocupada.
-	Caso 4: Liberar uma área entre áreas ocupadas.
-	Caso 5: Liberar uma área antecedendo o sentinela, e sucedendo uma área livre.
-	Caso 6: Liberar uma área antecedendo o sentinela, e sucedendo uma área ocupada.
-*/
+	std::cout << "\e[32;4m>>> Starting Tests of free operations within"
+			  << " a pool.\e[0m\n";
+
+	std::cout << "  Caso 1: Liberar uma área entre áreas livres.\n"
+			  << "  Caso 2: Liberar uma área antecedendo uma área ocupada,"
+			  << " e sucedendo uma área livre.\n"
+			  << "  Caso 3: Liberar uma área antecedendo uma área livre,"
+			  << " e sucecendo uma área ocupada.\n"
+			  << "  Caso 4: Liberar uma área entre áreas ocupadas.\n"
+			  << "  Caso 5: Liberar uma área antecedendo o sentinela,"
+			  << " e sucedendo uma área livre.\n"
+			  << "  Caso 6: Liberar uma área antecedendo o sentinela,"
+			  << " e sucedendo uma área ocupada.\n\n";
 
 /*Caso 1{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 1:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	delete[] ptr_a;
+	delete[] ptr_c;
+	p.view();
+	// Now, ptr_b is between 2 free areas.
+
+	delete[] ptr_b;
+	p.view();
 }
 /*}}}*/
 /*Caso 2{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 2:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	delete[] ptr_a;
+	p.view();
+	// Now, ptr_b is before a occupied area, and after a free one.
+
+	delete[] ptr_b;
+	p.view();
+	delete[] ptr_c;					// Freeing unused memory.
 }
 /*}}}*/
 /*Caso 3{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 3:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	delete[] ptr_c;
+	p.view();
+	// Now, ptr_b is before a free area, and after a occupied one.
+
+	delete[] ptr_b;
+	p.view();
+	delete[] ptr_a;					// Freeing unused memory.
 }
 /*}}}*/
 /*Caso 4{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 4:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	p.view();
+	// Now, ptr_b is between 2 occupied areas.
+
+	delete[] ptr_b;
+	p.view();
+	delete[] ptr_a;					// Freeing unused memory.
+	delete[] ptr_c;					// Freeing unused memory.
 }
 /*}}}*/
 /*Caso 5{{{*/
@@ -386,6 +443,27 @@ int main(/* int argc, char **argv */)
 }
 /*}}}*/
 
+/*Best-Fit method{{{*/
+	std::cout << "\n";
+{
+	SLPool q(130);					// Pool with 9 blocks and 1 sentinel
+	
+	double *ptr = new (q) double[10];	// Allocates 6 blocks.
+	q.view();
+	double *ptr1 = new (q) double[4];	// Allocates 3 blocks.
+	q.view();
+
+	try{ int *pointer = new (q) int[2]; delete pointer; }
+	catch ( std::bad_alloc& e ){
+		std::cerr << "Can't allocate more space within pool!"
+				  << "Create another pool or use the Operational System"
+				  << "(OS) allocation functions.\n";
+	}
+
+	delete ptr1;
+	delete ptr;
+}
+/*}}}*/
     std::cout << "\n>>> Exiting successfully...\n";
 
 	return EXIT_SUCCESS;

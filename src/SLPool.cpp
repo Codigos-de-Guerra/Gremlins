@@ -161,18 +161,29 @@ void SLPool::view( ) {
 	auto *pt = m_sentinel.m_next;
 	auto pos = 0u;
 	
+	std::string buffer;
+	int count = 0;
+
 	while (pos < m_n_blocks - 1) {
 		
         auto aut = (m_pool + pos)->m_length;
 		pos += aut;
 		
         if (m_pool + pos - aut == pt) {
-			while (aut-- > 0) std::cout << "[] ";
+			std::cout << "[ ";
+			while (aut-- > 0){
+				std::cout << "+";
+				count++;
+			}
+			std::cout << " ] ";
 			pt = pt->m_next;
+			buffer = buffer + "+[" + std::to_string(count) + "] ";
+			count = 0;
 		}
 		else {
 			std::cout << "[ " << string(aut, '#') << " ] ";
+			buffer = buffer + "-[" + std::to_string(aut) + "] ";
 		}
 	}
-	std::cout << "\n";
+	std::cout << "\n" << buffer << "|| Total blocks: " << m_n_blocks-1 << "\n";
 }
