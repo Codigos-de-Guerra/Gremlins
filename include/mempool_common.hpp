@@ -1,7 +1,7 @@
 /**
  * @file mempool_common.hpp
  * @version 1.0
- * @since Jun, 13. 
+ * @since Jun, 22. 
  * @date Jun, 26.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
@@ -14,15 +14,12 @@
 #include <cstdio>  // std::size_t
 #include "storage_pool.hpp"
 
+typedef std::size_t size_type;
+
 /**
  *  @brief The Tag structure has pointer that is a mark that points to a GM 
     owner of the lended memory
  */ 
-
-//namespace gm
-//{
-    typedef std::size_t size_type;
-
     struct Tag {
         StoragePool *pool;  //!< A reference to the Pool
     };
@@ -36,7 +33,6 @@
     }
 
     void *operator new[](size_type bytes, StoragePool &p) {
-		std::cout << "Tamanho Tag: " << sizeof(Tag) << "\n";
         Tag * const tag = reinterpret_cast<Tag *>(p.Allocate(bytes + sizeof(Tag)));
         tag->pool = &p;
         // skip sizeof tag to get the raw data-block.
@@ -80,6 +76,5 @@
         else
             std::free(tag);  // Memory block belongs to the operational system.
     }
-//}
 
 #endif

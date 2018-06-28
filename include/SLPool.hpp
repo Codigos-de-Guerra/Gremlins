@@ -1,7 +1,7 @@
 /**
  * @file SLPool.hpp
  * @version 1.0
- * @since Jun, 13. 
+ * @since Jun, 22. 
  * @date Jun, 25.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
@@ -54,7 +54,7 @@ namespace gm
   
           	/**
           	 * @brief Free Memory
-			 * @param _p A pointer to element to be freed
+			       * @param _p A pointer to element to be freed
           	 */
           	void Free(void *_p);
   

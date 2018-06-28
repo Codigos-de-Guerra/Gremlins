@@ -1,7 +1,7 @@
 /**
  * @file SLPool.cpp
  * @version 1.0
- * @since Jun, 13. 
+ * @since Jun, 22. 
  * @date Jun, 25.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
@@ -156,9 +156,11 @@ void SLPool::view( ) {
 	auto pos = 0u;
 	
 	while (pos < m_n_blocks - 1) {
-		auto aut = (m_pool + pos)->m_length;
+		
+        auto aut = (m_pool + pos)->m_length;
 		pos += aut;
-		if (m_pool + pos - aut == pt) {
+		
+        if (m_pool + pos - aut == pt) {
 			while (aut-- > 0) std::cout << "[] ";
 			pt = pt->m_next;
 		}

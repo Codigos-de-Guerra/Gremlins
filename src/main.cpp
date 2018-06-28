@@ -1,8 +1,8 @@
 /**
  * @file main.hpp
  * @version 1.0
- * @since Jun, 13. 
- * @date Jun, 22.
+ * @since Jun, 22. 
+ * @date Jun, 27.
  * @author Oziel Alves (ozielalves@ufrn.edu.br)
  * @author Daniel Guerra (daniel.guerra13@hotmail.com)
  * @title Driver
@@ -24,7 +24,9 @@
 #include "../include/mempool_common.hpp"
 
 typedef std::time_t tempo;
-typedef std::chrono chrono;
+typedef std::string string;
+
+using namespace gm;
 
 /**
  * @brief Event Class
@@ -33,7 +35,7 @@ typedef std::chrono chrono;
 class Event {
  public:
     /**
-     * @brief Event default (empty) constructor
+     * @brief Event default constructor
      */
     Event( ) { /*Empty*/ }
 
@@ -133,14 +135,182 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit) {
 
 int main(/* int argc, char **argv */)
 {
+	/*{
+		StoragePool *pool = new gm::SLPool(300);
 
-	gm::SLPool p(220), q(110);
+    	int *allocs[7];
+
+    	// Shows the initial state from memory pool
+    	std::cout << "~ Current State ~\n" << string(4, ' ');
+    	pool.view( );
+
+    	// Allocate 10 integers 3 times to test allocation on begining of pool
+    	for ( int i = 0; i < 3; i++ ) {
+        	allocs[i] = new( pool ) int[10];
+        	std::cout << "\n[" << i << "] <<< Allocating integers\n" << string(8, ' ');
+        	pool.view( );
+    	}
+
+    	// Unit tests (testing assignment)
+    	for ( int i = 0; i < 10; i++ ) {
+        	allocs[0][i] = i;
+        	allocs[1][i] = i;
+        	allocs[2][i] = i;
+        	assert( allocs[0][i] == i );
+        	assert( allocs[1][i] == i );
+        	assert( allocs[2][i] == i );
+   		}
+
+    	// Free the first allocation (no merge)
+    	delete allocs[0];
+    	std::cout << "\n[0] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Free the third allocation (merge on right side)
+    	delete allocs[2];
+    	std::cout << "\n[2] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Allocate 30 integers (allocation after another element and empty spaces)
+    	allocs[3] = new(pool) int[30];
+    	std::cout << "\n[3] <<< Allocate 30 integers:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Unit tests (testing assignment)
+    	for ( int i = 0; i < 30; i++ ) {
+        	allocs[3][i] = i;
+        	assert( allocs[3][i] == i );
+    	}
+
+    	// Free the second allocation (merge on left side)
+    	delete allocs[1];
+    	std::cout << "\n[1] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Allocate 1 integer 2 times (at the beginning of the pool)
+    	for ( int i = 4; i < 6; i++ ) {
+        	allocs[i] = new(pool) int[1];
+        	std::cout << "\n[" << i << "] <<< Allocate 1 integer:\n" << string(8, ' ');
+        	pool.view( );
+    	}
+
+    	// Unit tests (testing assignment)
+    	for ( int i = 0; i < 1; i++ ) {
+        	allocs[4][i] = i;
+        	allocs[5][i] = i;
+        	assert( allocs[4][i] == i );
+        	assert( allocs[5][i] == i) ;
+    	}
+
+    	// Free allocs[4] (no merge)
+    	delete allocs[4];
+    	std::cout << "\n[4] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Free allocs[3] (merge on both sides)
+    	delete allocs[3];
+    	std::cout << "\n[3] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Allocate 65 integers (fitting all the right area on pool)
+    	allocs[6] = new(pool) int[65];
+    	std::cout << "\n[6] <<< Allocate 65 integers:\n" << string(8, ' ');
+    	pool.view( );
+
+    	// Unit tests (testing assignment)
+    	for (int i = 0; i < 65; i++) {
+        	allocs[6][i] = i;
+        	assert( allocs[6][i] == i );
+    	}
+
+    	// Free allocs[6] (no merge)
+    	delete allocs[6];
+    	std::cout << "\n[6] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view();
+
+    	// Free allocs[5] (merge on both sides)
+    	delete allocs[5];
+    	std::cout << "\n[5] <<< Free allocation:\n" << string(8, ' ');
+    	pool.view( );
+
+    	delete pool;
+	}*/
+
+/*------------------------------ Time Counting------------------------------*/ 
+
+{
+    // Creates the pool
+    StoragePool *pool = new SLPool(2000);
+
+    // The initial time
+    auto s = std::chrono::steady_clock::now( );
+    
+    // Run the function to tests
+    StoragePoolTest(pool, 1);
+    
+    // The final time
+    auto e = std::chrono::steady_clock::now( );
+    
+    // Calculates the difference
+    auto diff = std::chrono::duration<double, std::nano>(e - s).count( );
+
+    std::cout << ">>> Time spent: " << diff << " ns\n";
+
+    // Deletes the pool
+    delete pool;
+}
+
+{
+	std::chrono::steady_clock::time_point start, end;
+    auto time_spent = 0.0l;
+    int times = 100000, *al1 = nullptr, *al2 = nullptr;
+    SLPool pool(100);
+
+    // Average Time with the Memory Manager
+    for ( int i = 0; i < times; i++ ) {
+        start = std::chrono::steady_clock::now( );
+        for (int j = 1; j <= 10; j += 2) {
+            al1 = new(pool) int[j];
+            al2 = new(pool) int[j+1];
+            delete[] al1;
+            delete[] al2;
+        }
+        // The final time
+        end = std::chrono::steady_clock::now();
+        // Calculates the difference
+        auto diff = std::chrono::duration<double, std::nano>(end-start).count( );
+        // Calculates the average time using standard deviation
+        time_spent += (diff - time_spent)/(i+1);
+    }
+    std::cout << ">>> Memory Manager time: " << time_spent << " ns\n";
+
+    // Average Time with the Operational System
+    time_spent = 0;
+    for ( int i = 0; i < times; i++ ) {
+        start = std::chrono::steady_clock::now();
+        for ( int j = 1; j <= 10; j += 2 ) {
+            al1 = new int[j];
+            al2 = new int[j+1];
+            delete[] al1;
+            delete[] al2;
+        }
+        // The final time
+        end = std::chrono::steady_clock::now();
+        // Calculates the difference
+        auto diff = std::chrono::duration<double, std::nano>(end-start).count();
+        // Calculates the average time using standard deviation
+        time_spent += (diff - time_spent)/(i+1);
+    }
+    std::cout << ">>> Operational System time: " << time_spent << " ns\n";
+}
+
+//	gm::SLPool p(220), q(110);
 
 	/* Also remembers that adds sizeof(Tag) when allocating.
 		Therefore, a call to allocate 44 bytes becomes, inside code,
 		a call to allocate 52 bytes. Requiring 4 blocks since 4*16 = 64.
 	*/
-	int *ptr0 = new int[2];			// Allocates 2*4=8 bytes.
+/*	int *ptr0 = new int[2];			// Allocates 2*4=8 bytes.
 	int *ptr1 = new (p) int[6];		// Allocates 6*4=24 bytes.
 	int *ptr2 = new (q) int[11];	// Allocates 10*4=40 bytes.
 
@@ -156,7 +326,9 @@ int main(/* int argc, char **argv */)
 	p.view();
 	q.view();
 
+*/
 
+    std::cout << "\n>>> Exiting successfully...\n";
 
-	return 0;
+	return EXIT_SUCCESS;
 }
