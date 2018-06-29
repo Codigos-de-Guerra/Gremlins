@@ -26,17 +26,20 @@ typedef std::string string;
  * @brief gm::SLPool class implementation.
  */
 
-SLPool::SLPool(size_type _b) :
+SLPool::SLPool( size_type _b, StoragePool::policy_type _pt ) :
     m_n_blocks( std::ceil( static_cast<float>( _b)/Block::BlockSize ) + 1 ),
     m_pool( new Block[m_n_blocks] ),
     m_sentinel( m_pool[m_n_blocks - 1] ) {
     
-    	// Sets the first m_pool element values
+    	// Sets the first m_pool element values.
     	m_pool[0].m_length = m_n_blocks - 1;
     	m_pool[0].m_next = nullptr;
 
-    	// Makes m_sentinel points to the first m_pool element
+    	// Makes m_sentinel points to the first m_pool element.
     	m_sentinel.m_next = m_pool;
+
+		// Defines policy type.
+		StoragePool::m_policy = _pt;
 }
 
 SLPool::~SLPool() {

@@ -25,16 +25,32 @@ typedef std::size_t size_type;
     };
 
     void *operator new(size_type bytes, StoragePool &p) {
-    
-        Tag * const tag = reinterpret_cast<Tag *>(p.Allocate(bytes + sizeof(Tag)));
+
+		Tag *tag = nullptr;
+		size_type new_size = bytes + sizeof(Tag);
+
+   		if( p.m_policy == StoragePool::BEST_FIT ){
+			tag = reinterpret_cast<Tag *const>(p.AllocateBF(new_size));
+		}
+		else {
+        	tag = reinterpret_cast<Tag *const>(p.Allocate(new_size));
+		}
         tag->pool = &p;
         // skip sizeof tag to get the raw data-block.
         return reinterpret_cast<void *>(tag + 1U);
     }
 
     void *operator new[](size_type bytes, StoragePool &p) {
-        Tag * const tag = reinterpret_cast<Tag *>(p.Allocate(bytes + sizeof(Tag)));
-        tag->pool = &p;
+
+		Tag *tag = nullptr;
+		size_type new_size = bytes + sizeof(Tag);
+   		if( p.m_policy == StoragePool::BEST_FIT ){
+			tag = reinterpret_cast<Tag *const>(p.AllocateBF(new_size));
+		}
+		else {
+	     	tag = reinterpret_cast<Tag *const>(p.Allocate(new_size));
+		}
+		tag->pool = &p;
         // skip sizeof tag to get the raw data-block.
         return reinterpret_cast<void *>(tag + 1U);
     }

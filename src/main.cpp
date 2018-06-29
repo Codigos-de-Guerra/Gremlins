@@ -143,7 +143,7 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit)
 int main(/* int argc, char **argv */)
 {
 /*{{{*/
-	std::cout << "\n\e[31;1m>>>Subtitles:\e[0m\n"
+	std::cout << "\n\e[34;1m>>>Subtitles:\e[0m\n"
 			  << "\t\e[30;1m+: Avaiable area. Free area.\n"
 			  << "\t-: Occupied area. Already in use.\n"
 			  << "\t*: Representation of free blocks. Avaiable for use.\n"
@@ -255,6 +255,7 @@ int main(/* int argc, char **argv */)
 /*------------------------------ Time Counting------------------------------*/ 
 /*Time Testing{{{*/
 {
+	std::cout << "\e[34;1m>>> Using a exaustive testing with memory pool.\e[0m\n";
     // Creates the pool
     StoragePool *pool = new SLPool(2048);
 
@@ -270,7 +271,7 @@ int main(/* int argc, char **argv */)
     // Calculates the difference
     auto diff = std::chrono::duration<double, std::nano>(e - s).count( );
 
-    std::cout << ">>> Time spent: " << diff << " ns\n";
+    std::cout << ">>> Time spent: " << diff << " ns\n\n";
 
     // Deletes the pool
     delete pool;
@@ -280,9 +281,9 @@ int main(/* int argc, char **argv */)
 	std::chrono::steady_clock::time_point start, end;
     auto time_spent = 0.0l;
     int times = 100000, *al1 = nullptr, *al2 = nullptr;
-    SLPool pool(400);
 
     // Average Time with the Memory Manager
+	SLPool pool(400, StoragePool::FIRST_FIT);
     for ( int i = 0; i < times; i++ ) {
         start = std::chrono::steady_clock::now( );
         for (int j = 1; j <= 10; j += 2) {
@@ -299,7 +300,28 @@ int main(/* int argc, char **argv */)
         // Calculates the average time using standard deviation
         time_spent += (diff - time_spent)/(i+1);
     }
-    std::cout << ">>> Memory Manager time: " << time_spent << " ns\n";
+    std::cout << ">>> Memory Manager time with First-Fit: " << time_spent << " ns\n";
+
+    // Average Time with the Memory Manager with Best-Fit
+	SLPool pool1(400, StoragePool::BEST_FIT);
+	time_spent = 0;
+    for ( int i = 0; i < times; i++ ) {
+        start = std::chrono::steady_clock::now( );
+        for (int j = 1; j <= 10; j += 2) {
+            al1 = new(pool1) int[j];
+            al2 = new(pool1) int[j+1];
+            delete[] al1;
+            delete[] al2;
+        }
+
+        // The final time
+        end = std::chrono::steady_clock::now();
+        // Calculates the difference
+        auto diff = std::chrono::duration<double, std::nano>(end-start).count( );
+        // Calculates the average time using standard deviation
+        time_spent += (diff - time_spent)/(i+1);
+    }
+	std::cout << ">>> Memory Manager time with Best-Fit: " << time_spent << " ns\n";
 
     // Average Time with the Operational System
     time_spent = 0;
@@ -348,11 +370,11 @@ int main(/* int argc, char **argv */)
 	delete[] ptr;
 	delete[] ptr1;
 
-	std::cout << "Data not corrupted. Maintenance successful.\n\n";
+	std::cout << "\e[32;1m>Data not corrupted. Maintenance successful.\n\n";
 }
 /*}}}*/
 
-	std::cout << "\e[32;4m>>> Starting Tests of free operations within"
+	std::cout << "\e[34;1m>>> Starting Tests of free operations within"
 			  << " a pool.\e[0m\n";
 
 	std::cout << "  Caso 1: Liberar uma área entre áreas livres.\n"
@@ -365,6 +387,11 @@ int main(/* int argc, char **argv */)
 			  << " e sucedendo uma área livre.\n"
 			  << "  Caso 6: Liberar uma área antecedendo o sentinela,"
 			  << " e sucedendo uma área ocupada.\n\n";
+
+	std::cout << "\t  \e[31;1m>>OBSERVATION\e[0m: Graphical presentation of"
+			  << " testing cases works as:\n"
+			  << "\t\tFirst 2 lines from before specified free operation.\n"
+			  << "\t\tLast 2 lines from after specified free operation.\n";
 
 /*Caso 1{{{*/
 {
@@ -436,35 +463,66 @@ int main(/* int argc, char **argv */)
 /*}}}*/
 /*Caso 5{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 5:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[8];	// Asking for 3 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	delete[] ptr_b;
+	p.view();
+	// Now, ptr_c is before the sentinel, and after a free area.
+	
+	delete ptr_c;
+	p.view();
+	delete[] ptr_a;					// Freeing unused memory.
+
 }
 /*}}}*/
 /*Caso 6{{{*/
 {
+	std::cout << "\e[36;3mTesting Case 6:\e[0m\n";
+	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
+	int *ptr_a = new (p) int[8];	// Asking for 3 blocks. 5*4+8=28.
+	int *ptr_b = new (p) int[8];	// Asking for 3 blocks. 8*4+8=40.
+	int *ptr_c = new (p) int[5];	// Asking for 2 blocks. 5*4+8=28.
+
+	p.view();
+	// Now, ptr_c is before the sentinel, and after a occupied area.
+	
+	delete ptr_c;
+	p.view();
+	delete[] ptr_a;					// Freeing unused memory.
+	delete[] ptr_b;					// Freeing unused memory.
+
 }
 /*}}}*/
 
-/*Best-Fit method{{{*/
+/*Data preservation test{{{*/
 	std::cout << "\n";
 {
-	SLPool q(130);					// Pool with 9 blocks and 1 sentinel
+	SLPool q(130, StoragePool::BEST_FIT);	// Pool with 9 blocks and 1 sentinel
 	
 	double *ptr = new (q) double[10];	// Allocates 6 blocks.
 	q.view();
 	double *ptr1 = new (q) double[4];	// Allocates 3 blocks.
 	q.view();
 
+	bool oziel;
 	try{ int *pointer = new (q) int[2]; delete pointer; }
 	catch ( std::bad_alloc& e ){
+		oziel = true;
 		std::cerr << "Can't allocate more space within pool!"
 				  << "Create another pool or use the Operational System"
 				  << "(OS) allocation functions.\n";
 	}
 
+	assert( oziel );
 	delete ptr1;
 	delete ptr;
 }
 /*}}}*/
-    std::cout << "\n>>> Exiting successfully...\n";
+    std::cout << "\n\e[32;4m>>> Exiting successfully...\e[0m";
 
 	return EXIT_SUCCESS;
 }

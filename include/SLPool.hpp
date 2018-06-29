@@ -31,7 +31,8 @@ namespace gm
 			/**
 			 * @brief SLPool constructor
           	 */
-			explicit SLPool(size_type _b);
+			explicit SLPool( size_type _b,
+							 StoragePool::policy_type _pt = StoragePool::FIRST_FIT );
   
           	/**
           	 * @brief SLPool destructor

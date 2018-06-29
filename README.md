@@ -55,7 +55,20 @@ We decided to test throught allocations and free operations with the same quanti
 - Memory Pool's are really efficient. But it's greater efficiency is better achieved when many allocations are sure to be expected.
 - Regarding the allocations strategies, the First Fit strategy will mostly like to be more efficient and quicker, when allocating mostly small variables.
 - Also regarding allocations strategies, the Best Fit will ensure less fragmenting and consequently bigger free areas within the pool, when client code is expected to allocate bigger memory sizes and often make free operations.
+- Considering the different approaches for searching where to store a client's information, we give the client the opportunity to choose which approach to follow. Therefore, within client's code, on the very creation of the memory pool, it should receive which allocation policy to follow. If nothing is provided, then we opted for the First-Fit policy.
 
+#### Example on pool's creation
+
+```bash
+# Allocating 2Kb using First-Fit allocation policy for every new allocation on pool.
+SLPool pool(2048, StoragePool::FIRST-FIT);
+
+# Allocating 4Kb using First-Fit allocation policy for every new allocation on pool.
+SLPool pool(4096);		#DEFAULT VALUE
+
+# Allocating 10Kb using Best-Fit allocation policy for every new allocation on pool.
+SLPool pool(10240, StoragePool::BEST_FIT);
+```
 ## Authorship
 
 Program developed by [_Daniel Oliveira Guerra_](https://github.com/Codigos-de-Guerra) (*daniel.guerra13@hotmail.com*) and [_Oziel Alves_](https://github.com/ozielalves) (*ozielalves@ufrn.edu.br*), 2018.1
