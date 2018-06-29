@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-// #include <vector> // NÃO PODE - Deletar
 #include <fstream>
 #include <cstdlib>	// rand_r()
 #include <random>	// std::random_device
@@ -137,120 +136,15 @@ void StoragePoolTest(StoragePool *_pool, tempo _timeLimit)
         _pool->view( );
     }
 }
-
 /*}}}*/
 
 int main(/* int argc, char **argv */)
 {
-/*{{{*/
 	std::cout << "\n\e[34;1m>>>Subtitles:\e[0m\n"
 			  << "\t\e[30;1m+: Avaiable area. Free area.\n"
 			  << "\t-: Occupied area. Already in use.\n"
 			  << "\t*: Representation of free blocks. Avaiable for use.\n"
 			  << "\t#: Representation of occupied blocks.\e[0m\n\n\n";
-	//TODO...
-
-	/*{
-		StoragePool *pool = new gm::SLPool(300);
-
-    	int *allocs[7];
-
-    	// Shows the initial state from memory pool
-    	std::cout << "~ Current State ~\n" << string(4, ' ');
-    	pool.view( );
-
-    	// Allocate 10 integers 3 times to test allocation on begining of pool
-    	for ( int i = 0; i < 3; i++ ) {
-        	allocs[i] = new( pool ) int[10];
-        	std::cout << "\n[" << i << "] <<< Allocating integers\n" << string(8, ' ');
-        	pool.view( );
-    	}
-
-    	// Unit tests (testing assignment)
-    	for ( int i = 0; i < 10; i++ ) {
-        	allocs[0][i] = i;
-        	allocs[1][i] = i;
-        	allocs[2][i] = i;
-        	assert( allocs[0][i] == i );
-        	assert( allocs[1][i] == i );
-        	assert( allocs[2][i] == i );
-   		}
-
-    	// Free the first allocation (no merge)
-    	delete allocs[0];
-    	std::cout << "\n[0] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Free the third allocation (merge on right side)
-    	delete allocs[2];
-    	std::cout << "\n[2] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Allocate 30 integers (allocation after another element and empty spaces)
-    	allocs[3] = new(pool) int[30];
-    	std::cout << "\n[3] <<< Allocate 30 integers:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Unit tests (testing assignment)
-    	for ( int i = 0; i < 30; i++ ) {
-        	allocs[3][i] = i;
-        	assert( allocs[3][i] == i );
-    	}
-
-    	// Free the second allocation (merge on left side)
-    	delete allocs[1];
-    	std::cout << "\n[1] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Allocate 1 integer 2 times (at the beginning of the pool)
-    	for ( int i = 4; i < 6; i++ ) {
-        	allocs[i] = new(pool) int[1];
-        	std::cout << "\n[" << i << "] <<< Allocate 1 integer:\n" << string(8, ' ');
-        	pool.view( );
-    	}
-
-    	// Unit tests (testing assignment)
-    	for ( int i = 0; i < 1; i++ ) {
-        	allocs[4][i] = i;
-        	allocs[5][i] = i;
-        	assert( allocs[4][i] == i );
-        	assert( allocs[5][i] == i) ;
-    	}
-
-    	// Free allocs[4] (no merge)
-    	delete allocs[4];
-    	std::cout << "\n[4] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Free allocs[3] (merge on both sides)
-    	delete allocs[3];
-    	std::cout << "\n[3] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Allocate 65 integers (fitting all the right area on pool)
-    	allocs[6] = new(pool) int[65];
-    	std::cout << "\n[6] <<< Allocate 65 integers:\n" << string(8, ' ');
-    	pool.view( );
-
-    	// Unit tests (testing assignment)
-    	for (int i = 0; i < 65; i++) {
-        	allocs[6][i] = i;
-        	assert( allocs[6][i] == i );
-    	}
-
-    	// Free allocs[6] (no merge)
-    	delete allocs[6];
-    	std::cout << "\n[6] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view();
-
-    	// Free allocs[5] (merge on both sides)
-    	delete allocs[5];
-    	std::cout << "\n[5] <<< Free allocation:\n" << string(8, ' ');
-    	pool.view( );
-
-    	delete pool;
-	}*/
-/*}}}*/
 
 /*------------------------------ Time Counting------------------------------*/ 
 /*Time Testing{{{*/
@@ -343,7 +237,6 @@ int main(/* int argc, char **argv */)
     std::cout << ">>> Operational System time: " << time_spent << " ns\n";
 }
 /*}}}*/
-
 	std::cout << "\n>>> Testing data maintenance.";
 
 /*Testing if values are passed correctly{{{*/
@@ -373,27 +266,26 @@ int main(/* int argc, char **argv */)
 	std::cout << "\e[32;1m>Data not corrupted. Maintenance successful.\n\n";
 }
 /*}}}*/
-
 	std::cout << "\e[34;1m>>> Starting Tests of free operations within"
 			  << " a pool.\e[0m\n";
 
-	std::cout << "  Caso 1: Liberar uma área entre áreas livres.\n"
-			  << "  Caso 2: Liberar uma área antecedendo uma área ocupada,"
-			  << " e sucedendo uma área livre.\n"
-			  << "  Caso 3: Liberar uma área antecedendo uma área livre,"
-			  << " e sucecendo uma área ocupada.\n"
-			  << "  Caso 4: Liberar uma área entre áreas ocupadas.\n"
-			  << "  Caso 5: Liberar uma área antecedendo o sentinela,"
-			  << " e sucedendo uma área livre.\n"
-			  << "  Caso 6: Liberar uma área antecedendo o sentinela,"
-			  << " e sucedendo uma área ocupada.\n\n";
+	std::cout << "  Case 1: Free a area between 2 free areas.\n"
+			  << "  Case 2: Free a area preceding a occupied area,"
+			  << " and succeeding a free one.\n"
+			  << "  Case 3: Free a area preceding a free area,"
+			  << " and succeeding a occupied one.\n"
+			  << "  Case 4: Free a area between 2 occupied areas.\n"
+			  << "  Case 5: Free a area preceding the sentinel,"
+			  << " and succeeding a free area.\n"
+			  << "  Case 6: Free a area preceding the sentinel,"
+			  << " and succeeding a occupied area.\n\n";
 
 	std::cout << "\t  \e[31;1m>>OBSERVATION\e[0m: Graphical presentation of"
 			  << " testing cases works as:\n"
 			  << "\t\tFirst 2 lines from before specified free operation.\n"
 			  << "\t\tLast 2 lines from after specified free operation.\n";
 
-/*Caso 1{{{*/
+/*Case 1{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 1:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -410,7 +302,7 @@ int main(/* int argc, char **argv */)
 	p.view();
 }
 /*}}}*/
-/*Caso 2{{{*/
+/*Case 2{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 2:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -427,7 +319,7 @@ int main(/* int argc, char **argv */)
 	delete[] ptr_c;					// Freeing unused memory.
 }
 /*}}}*/
-/*Caso 3{{{*/
+/*Case 3{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 3:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -444,7 +336,7 @@ int main(/* int argc, char **argv */)
 	delete[] ptr_a;					// Freeing unused memory.
 }
 /*}}}*/
-/*Caso 4{{{*/
+/*Case 4{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 4:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -461,7 +353,7 @@ int main(/* int argc, char **argv */)
 	delete[] ptr_c;					// Freeing unused memory.
 }
 /*}}}*/
-/*Caso 5{{{*/
+/*Case 5{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 5:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -476,10 +368,9 @@ int main(/* int argc, char **argv */)
 	delete ptr_c;
 	p.view();
 	delete[] ptr_a;					// Freeing unused memory.
-
 }
 /*}}}*/
-/*Caso 6{{{*/
+/*Case 6{{{*/
 {
 	std::cout << "\e[36;3mTesting Case 6:\e[0m\n";
 	SLPool p(115);					// Pool with 8 blocks and 1 sentinel.
@@ -494,7 +385,6 @@ int main(/* int argc, char **argv */)
 	p.view();
 	delete[] ptr_a;					// Freeing unused memory.
 	delete[] ptr_b;					// Freeing unused memory.
-
 }
 /*}}}*/
 

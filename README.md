@@ -2,11 +2,11 @@
 
 ## Introduction
 
-This programming project implements the GREMLINS, GeREnciador de Memória com LIsta eNcadeada Simples, which in english would represent a Memory Management using Nested Lists.
+This programming project implements the GREMLINS, GeREnciador de Memória com LIsta eNcadeada Simples, which in english would represent a Memory Management using Nested Lists. Here we implement one (out of several) possible way to work with ***memory pools***, a very useful tool when comes to certain situations where standard allocation functions of C++ won't suffice for your specific problem. This way, making possible adapt dynamic memory allocation depending on the problem. More information over Memory Pool technique can be found [here](https://en.wikipedia.org/wiki/Memory_pool).
 
 ## How to compile
 
-First of all, obviously this repository is needed to work as desired, so we must to download this repo. As we know that ```git``` is a tremendous tool for any programmer, then we must have git installed.
+First of all, obviously this repository is needed to work as desired, so we must to download this repo. As we know that `git` is a tremendous tool for any programmer, then we must have git installed.
 
 It is also expected for user to have installed [doxygen](https://en.wikipedia.org/wiki/Doxygen) program. This will automatically generate documentation for code. Not a necessary package to compile and run program, but it is a tool to guide user through code functions. To install `doxygen` on UBUNTU, for example:
 
@@ -21,8 +21,11 @@ $ git clone https://github.com/Codigos-de-Guerra/Gremlins.git
 # Enter repo:
 $ cd Gremlins
 
-# To compile the whole project and also generate documentation, insert 'make' inside root of path:
+# To compile the whole project, insert 'make' inside of path's root:
 $ make
+
+# To generate file documentation, insert 'make docs' inside of path's root:
+$ make docs
 
 # To clean up all remaining trash data and files, such as the binary ones, insert 'make clean':
 $ make clean
@@ -64,7 +67,7 @@ We decided to test throught allocations and free operations with the same quanti
 SLPool pool(2048, StoragePool::FIRST-FIT);
 
 # Allocating 4Kb using First-Fit allocation policy for every new allocation on pool.
-SLPool pool(4096);		#DEFAULT VALUE
+SLPool pool(4096);		#DEFAULT POLICY
 
 # Allocating 10Kb using Best-Fit allocation policy for every new allocation on pool.
 SLPool pool(10240, StoragePool::BEST_FIT);
